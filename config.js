@@ -1,1 +1,1 @@
-const API_URL = "https://opinions-princess-clubs-appear.trycloudflare.com";
+const API_URL = "https://citizen-authorization-makeup-beans.trycloudflare.com";
