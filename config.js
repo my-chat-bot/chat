@@ -1,1 +1,1 @@
-const API_URL = "https://requested-messaging-seven-species.trycloudflare.com";
+const API_URL = "https://contributor-metals-tcp-encouraging.trycloudflare.com";
