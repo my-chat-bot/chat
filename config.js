@@ -1,1 +1,1 @@
-const API_URL = "https://mode-specifications-sku-wallpaper.trycloudflare.com";
+const API_URL = "https://polymer-analyzed-flip-relatively.trycloudflare.com";
