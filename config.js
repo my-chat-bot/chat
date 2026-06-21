@@ -1,1 +1,1 @@
-const API_URL = "https://overhead-census-istanbul-always.trycloudflare.com";
+const API_URL = "https://smtp-gsm-xhtml-gate.trycloudflare.com";
