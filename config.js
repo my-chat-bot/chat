@@ -1,1 +1,1 @@
-const API_URL = "https://pmid-processor-webcams-highland.trycloudflare.com";
+const API_URL = "https://quickly-shade-wilderness-meter.trycloudflare.com";
