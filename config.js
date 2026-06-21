@@ -1,1 +1,1 @@
-const API_URL = "https://smtp-gsm-xhtml-gate.trycloudflare.com";
+const API_URL = "https://nutrition-enormous-hardly-earlier.trycloudflare.com";
