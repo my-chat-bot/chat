@@ -1,1 +1,1 @@
-const API_URL = "https://lung-hip-hurricane-hottest.trycloudflare.com";
+const API_URL = "https://pmid-processor-webcams-highland.trycloudflare.com";
