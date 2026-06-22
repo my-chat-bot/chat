@@ -1,1 +1,1 @@
-const API_URL = "https://oasis-marks-ref-interface.trycloudflare.com";
+const API_URL = "https://indicate-either-rice-beaver.trycloudflare.com";
