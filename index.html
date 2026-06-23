@@ -3,344 +3,355 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rust RAG Bot</title>
+    <title>Chat</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
-            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: #f7f7f8;
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0d1117;
+            color: #e6edf3;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 16px;
+            padding: 1rem;
         }
         .chat-container {
-            max-width: 780px;
             width: 100%;
-            background: white;
-            border-radius: 24px;
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-            display: flex;
-            flex-direction: column;
-            height: 90vh;
-            max-height: 750px;
-            overflow: hidden;
+            max-width: 720px;
+            background: #161b22;
+            border-radius: 16px;
+            border: 1px solid #30363d;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
         }
-        .chat-header {
-            padding: 18px 24px;
-            border-bottom: 1px solid #eaeaec;
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #f0f6fc;
+            margin-bottom: 1rem;
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: #fafafa;
+            gap: 0.5rem;
         }
-        .chat-header h1 { font-size: 18px; font-weight: 600; color: #1a1a1a; }
-        .chat-header .status {
-            font-size: 13px; color: #6b6b6b; margin-left: auto;
-            background: #eaeaea; padding: 4px 12px; border-radius: 30px;
+        h1::after {
+            content: "●";
+            color: #3fb950;
+            font-size: 0.75rem;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
         .messages {
-            flex: 1; overflow-y: auto; padding: 20px 24px 8px 24px;
-            display: flex; flex-direction: column; gap: 16px; background: #ffffff;
+            background: #0d1117;
+            border-radius: 12px;
+            padding: 1rem;
+            height: 400px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            border: 1px solid #21262d;
         }
-        .message { display: flex; gap: 12px; align-items: flex-start; animation: fadeIn 0.2s ease; }
-        .message.user { flex-direction: row-reverse; }
-        .message .avatar {
-            width: 32px; height: 32px; border-radius: 50%;
-            background: #e1e1e1; display: flex; align-items: center; justify-content: center;
-            font-size: 16px; flex-shrink: 0; user-select: none;
-        }
-        .message.user .avatar { background: #10a37f; color: white; }
-        .message .bubble {
-            background: #f1f1f4; padding: 12px 16px; border-radius: 20px;
-            max-width: 80%; word-break: break-word; line-height: 1.5;
-            color: #1a1a1a; font-size: 15px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-        }
-        .message.user .bubble { background: #10a37f; color: white; }
-        .message .bubble .cursor {
-            display: inline-block; width: 2px; height: 1.1em;
-            background: currentColor; animation: blink 1s step-end infinite; margin-left: 2px;
-        }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        .input-area {
-            padding: 16px 24px 24px 24px;
-            border-top: 1px solid #eaeaec;
-            background: #fafafa;
-        }
-        .input-row { display: flex; gap: 12px; align-items: flex-end; }
-        .input-row textarea {
-            flex: 1; border: 1px solid #d9d9e3; border-radius: 30px;
-            padding: 12px 18px; font-size: 15px; font-family: inherit;
-            resize: none; outline: none; background: white;
-            transition: border-color 0.2s; min-height: 52px; max-height: 140px; line-height: 1.4;
-        }
-        .input-row textarea:focus { border-color: #10a37f; }
-        .input-row button {
-            background: #10a37f; border: none; color: white;
-            width: 52px; height: 52px; border-radius: 30px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: background 0.2s; flex-shrink: 0;
-        }
-        .input-row button:hover { background: #0d8b6b; }
-        .input-row button:disabled { background: #b0b0b0; cursor: not-allowed; }
-        .input-row button svg { width: 24px; height: 24px; fill: currentColor; }
         .messages::-webkit-scrollbar { width: 6px; }
         .messages::-webkit-scrollbar-track { background: transparent; }
-        .messages::-webkit-scrollbar-thumb { background: #d0d0d0; border-radius: 10px; }
-        .messages::-webkit-scrollbar-thumb:hover { background: #b0b0b0; }
-        @media (max-width: 600px) {
-            body { padding: 8px; }
-            .chat-container { height: 95vh; max-height: none; border-radius: 16px; }
-            .messages { padding: 16px 16px 4px 16px; }
-            .input-area { padding: 12px 16px 16px 16px; }
+        .messages::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
+        .message {
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            max-width: 90%;
+            word-wrap: break-word;
+            line-height: 1.6;
+            animation: fadeIn 0.2s ease;
         }
-        .source-tag {
-            font-size: 12px;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message.user {
+            background: #1f6feb;
+            margin-left: auto;
+            color: #fff;
+        }
+        .message.bot {
+            background: #21262d;
+            margin-right: auto;
+        }
+        .message.error {
+            background: #da3633;
+            color: #fff;
+        }
+        .message .source {
+            font-size: 0.6rem;
+            opacity: 0.5;
+            margin-top: 0.25rem;
+        }
+        .typing-indicator {
+            display: none;
+            padding: 0.5rem 0.75rem;
+            color: #8b949e;
+            font-size: 0.875rem;
+        }
+        .typing-indicator.active {
+            display: block;
+        }
+        .input-row {
+            display: flex;
+            gap: 0.75rem;
+        }
+        .input-row input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            background: #0d1117;
+            color: #e6edf3;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .input-row input:focus {
+            border-color: #1f6feb;
+        }
+        .input-row input::placeholder {
+            color: #8b949e;
+        }
+        .input-row button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            background: #1f6feb;
+            color: #fff;
             font-weight: 600;
-            color: #0d8b6b;
-            background: #e6f7f0;
-            padding: 2px 14px;
-            border-radius: 30px;
-            display: inline-block;
-            margin-top: 6px;
-            border: 1px solid #0d8b6b;
-            letter-spacing: 0.3px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        .input-row button:hover {
+            background: #388bfd;
+        }
+        .input-row button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .status {
+            margin-top: 0.75rem;
+            font-size: 0.75rem;
+            color: #8b949e;
+            text-align: center;
+        }
+        .status a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        .status a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
+
     <div class="chat-container">
-        <div class="chat-header">
-            <h1>🤖 Rust RAG Bot</h1>
-            <span class="status" id="status">● Ready</span>
-        </div>
-        <div class="messages" id="messages"></div>
-        <div class="input-area">
-            <div class="input-row">
-                <textarea id="input" rows="1" placeholder="Ask anything..." disabled></textarea>
-                <button id="send" disabled>
-                    <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-                </button>
+        <h1>Chat</h1>
+
+        <div class="messages" id="messages">
+            <div class="message bot">
+                Hello! Ask me anything.
+                <div class="source">powered by Ollama</div>
             </div>
+        </div>
+
+        <div class="typing-indicator" id="typing">… thinking</div>
+
+        <div class="input-row">
+            <input type="text" id="question" placeholder="Type your question…" autofocus />
+            <button id="sendBtn">Send</button>
+        </div>
+
+        <div class="status">
+            API: <span id="apiUrl">loading…</span>
         </div>
     </div>
 
     <script>
+        // ------------------------------------------------------------------
+        // Load config.json
+        // ------------------------------------------------------------------
+        let API_URL = null;
+
+        fetch('config.json')
+            .then(res => {
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            })
+            .then(config => {
+                if (!config.apiUrl) throw new Error('Missing apiUrl in config.json');
+                API_URL = config.apiUrl;
+                document.getElementById('apiUrl').textContent = API_URL;
+                // Enable the UI after config loads
+                document.getElementById('question').disabled = false;
+                document.getElementById('sendBtn').disabled = false;
+                document.getElementById('question').placeholder = 'Type your question…';
+            })
+            .catch(err => {
+                console.error('Failed to load config.json:', err);
+                document.getElementById('apiUrl').textContent = '❌ config.json not loaded';
+                document.querySelector('.status').style.color = '#da3633';
+                // Show a fallback error message
+                const msg = document.createElement('div');
+                msg.className = 'message error';
+                msg.textContent = '❌ Could not load config.json. Please check the file exists.';
+                document.getElementById('messages').appendChild(msg);
+            });
+
+        // ------------------------------------------------------------------
+        // DOM refs (but wait for config to load before enabling)
+        // ------------------------------------------------------------------
         const messagesEl = document.getElementById('messages');
-        const inputEl = document.getElementById('input');
-        const sendBtn = document.getElementById('send');
-        const statusEl = document.getElementById('status');
+        const typingEl = document.getElementById('typing');
+        const inputEl = document.getElementById('question');
+        const sendBtn = document.getElementById('sendBtn');
 
-        let isProcessing = false;
-        let API_BASE = '';
-        let rafId = null;
-        let pendingContent = '';
+        // Disable UI until config is loaded (set in HTML)
+        inputEl.disabled = true;
+        sendBtn.disabled = true;
+        inputEl.placeholder = 'Loading config…';
 
-        async function loadConfig() {
-            try {
-                const resp = await fetch('config.js');
-                if (resp.ok) {
-                    const text = await resp.text();
-                    const match = text.match(/const\s+API_URL\s*=\s*["']([^"']+)["']/);
-                    if (match) {
-                        API_BASE = match[1];
-                        console.log('✅ API URL loaded:', API_BASE);
-                        const link = document.createElement('link');
-                        link.rel = 'preconnect';
-                        link.href = new URL(API_BASE).origin;
-                        document.head.appendChild(link);
-                        return;
-                    }
-                }
-            } catch (e) {}
-            API_BASE = '';
-        }
-
-        function appendMessage(role, content, source = null) {
+        // ------------------------------------------------------------------
+        // Helpers
+        // ------------------------------------------------------------------
+        function addMessage(text, type = 'bot', source = null) {
             const div = document.createElement('div');
-            div.className = `message ${role}`;
-            const avatar = document.createElement('div');
-            avatar.className = 'avatar';
-            avatar.textContent = role === 'user' ? '👤' : '🤖';
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            bubble.textContent = content;
-            if (source && role === 'assistant') {
-                const tag = document.createElement('span');
-                tag.className = 'source-tag';
-                tag.textContent = `⚡ ${source}`;
-                bubble.appendChild(tag);
-                console.log(`✅ Source: ${source}`);
+            div.className = `message ${type}`;
+            div.textContent = text;
+            if (source) {
+                const src = document.createElement('div');
+                src.className = 'source';
+                src.textContent = `source: ${source}`;
+                div.appendChild(src);
             }
-            div.appendChild(avatar);
-            div.appendChild(bubble);
             messagesEl.appendChild(div);
             messagesEl.scrollTop = messagesEl.scrollHeight;
-            return { div, bubble };
+            return div;
         }
 
-        function setBubbleContent(bubble, content, withCursor = false) {
-            pendingContent = content;
-            if (rafId) return;
-            rafId = requestAnimationFrame(() => {
-                rafId = null;
-                const safe = pendingContent.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                if (withCursor) {
-                    bubble.innerHTML = safe + '<span class="cursor"></span>';
-                } else {
-                    bubble.textContent = safe;
-                }
-                messagesEl.scrollTop = messagesEl.scrollHeight;
-            });
+        function setTyping(visible) {
+            typingEl.classList.toggle('active', visible);
         }
 
-        function flushBubbleContent(bubble, content) {
-            if (rafId) {
-                cancelAnimationFrame(rafId);
-                rafId = null;
+        function setLoading(loading) {
+            sendBtn.disabled = loading || !API_URL;
+            inputEl.disabled = loading || !API_URL;
+            if (loading) {
+                sendBtn.textContent = '…';
+            } else {
+                sendBtn.textContent = 'Send';
             }
-            const safe = content.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            bubble.textContent = safe;
-            messagesEl.scrollTop = messagesEl.scrollHeight;
         }
 
-        function setStatus(text, isError = false) {
-            statusEl.textContent = text;
-            statusEl.style.color = isError ? '#d32f2f' : '#6b6b6b';
-        }
+        // ------------------------------------------------------------------
+        // Core: send question and stream answer
+        // ------------------------------------------------------------------
+        async function sendQuestion(question) {
+            if (!question.trim() || !API_URL) return;
 
-        function enableUI(enabled) {
-            inputEl.disabled = !enabled;
-            sendBtn.disabled = !enabled;
-            if (enabled) inputEl.focus();
-        }
-
-        // ---- sendBeacon prefetch ----
-        let preFetchTimeout = null;
-        inputEl.addEventListener('input', () => {
-            clearTimeout(preFetchTimeout);
-            preFetchTimeout = setTimeout(() => {
-                const partial = inputEl.value.trim();
-                if (partial.length > 3 && !isProcessing) {
-                    const url = API_BASE ? `${API_BASE}/prefetch` : '/prefetch';
-                    navigator.sendBeacon(url, JSON.stringify({ partial }));
-                }
-            }, 500);
-        });
-
-        // ---- Send message ----
-        async function sendMessage() {
-            if (isProcessing) return;
-            const question = inputEl.value.trim();
-            if (!question) return;
-
+            addMessage(question, 'user');
             inputEl.value = '';
-            isProcessing = true;
-            enableUI(false);
-            setStatus('● Thinking...');
 
-            appendMessage('user', question);
-            const { bubble } = appendMessage('assistant', '');
-            setBubbleContent(bubble, '', true);
+            setTyping(true);
+            setLoading(true);
+
+            const botMsg = addMessage('', 'bot');
             let fullAnswer = '';
 
             try {
-                const url = API_BASE ? `${API_BASE}/ask` : '/ask';
-                const resp = await fetch(url, {
+                const response = await fetch(`${API_URL}/ask`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ question, stream: true })
+                    body: JSON.stringify({ question }),
                 });
 
-                if (!resp.ok) {
-                    const errText = await resp.text();
-                    throw new Error(`Server error (${resp.status}): ${errText}`);
+                if (!response.ok) {
+                    const err = await response.text();
+                    throw new Error(`Server error: ${response.status} ${err}`);
                 }
 
-                const contentType = resp.headers.get('content-type') || '';
-                if (contentType.includes('application/json')) {
-                    const data = await resp.json();
-                    fullAnswer = data.answer;
-                    flushBubbleContent(bubble, fullAnswer);
-                    if (data.source) {
-                        const tag = document.createElement('span');
-                        tag.className = 'source-tag';
-                        tag.textContent = `⚡ ${data.source}`;
-                        bubble.appendChild(tag);
-                    }
-                    setStatus('● Ready');
-                    isProcessing = false;
-                    enableUI(true);
-                    inputEl.focus();
-                    return;
-                }
-
-                const reader = resp.body.getReader();
-                const decoder = new TextDecoder();
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder('utf-8');
+                let buffer = '';
 
                 while (true) {
-                    const { value, done } = await reader.read();
+                    const { done, value } = await reader.read();
                     if (done) break;
-                    const chunk = decoder.decode(value);
-                    const lines = chunk.split('\n').filter(l => l.trim());
-                    for (const line of lines) {
-                        if (line.startsWith('data: ')) {
-                            try {
-                                const data = JSON.parse(line.slice(6));
-                                if (data.token !== undefined) {
-                                    fullAnswer += data.token;
-                                    setBubbleContent(bubble, fullAnswer, true);
+
+                    buffer += decoder.decode(value, { stream: true });
+
+                    while (buffer.includes('\n')) {
+                        const newlineIdx = buffer.indexOf('\n');
+                        let line = buffer.slice(0, newlineIdx).trim();
+                        buffer = buffer.slice(newlineIdx + 1);
+
+                        if (!line) continue;
+                        if (!line.startsWith('data: ')) continue;
+
+                        const jsonStr = line.slice(6);
+                        try {
+                            const data = JSON.parse(jsonStr);
+                            if (data.token !== undefined && data.done !== undefined) {
+                                if (!data.done) {
+                                    const token = data.token || '';
+                                    fullAnswer += token;
+                                    botMsg.textContent = fullAnswer;
+                                    messagesEl.scrollTop = messagesEl.scrollHeight;
                                 }
-                                if (data.done) {
-                                    if (data.source) {
-                                        const tag = document.createElement('span');
-                                        tag.className = 'source-tag';
-                                        tag.textContent = `⚡ ${data.source}`;
-                                        bubble.appendChild(tag);
-                                    }
-                                    break;
-                                }
-                            } catch (e) { console.warn('Parse error:', e, line); }
+                            }
+                        } catch (_) {
                         }
                     }
                 }
 
-                flushBubbleContent(bubble, fullAnswer);
-                setStatus('● Ready');
+                if (!fullAnswer) {
+                    botMsg.textContent = '(no response)';
+                }
+                const sourceEl = botMsg.querySelector('.source');
+                if (sourceEl) {
+                    sourceEl.textContent = 'source: ollama';
+                }
+
             } catch (err) {
                 console.error(err);
-                flushBubbleContent(bubble, `⚠️ Error: ${err.message}`);
-                setStatus('⚠️ Error', true);
+                botMsg.textContent = `${err.message || 'Something went wrong.'}`;
+                botMsg.className = 'message error';
             } finally {
-                isProcessing = false;
-                enableUI(true);
+                setTyping(false);
+                setLoading(false);
                 inputEl.focus();
             }
         }
 
-        sendBtn.addEventListener('click', sendMessage);
+        // ------------------------------------------------------------------
+        // Event listeners (only if API_URL is set)
+        // ------------------------------------------------------------------
+        sendBtn.addEventListener('click', () => {
+            if (API_URL) sendQuestion(inputEl.value);
+        });
+
         inputEl.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                sendMessage();
+                if (API_URL) sendQuestion(inputEl.value);
             }
         });
-        inputEl.addEventListener('input', () => {
-            inputEl.style.height = 'auto';
-            inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
-        });
 
-        async function init() {
-            await loadConfig();
-            enableUI(true);
-            inputEl.focus();
-            setStatus('● Ready');
-            appendMessage('assistant', '👋 Ask me anything!');
-        }
-        init();
+        // We'll let the config load complete first.
+        // The UI is enabled after fetch resolves.
     </script>
+
 </body>
 </html>
