@@ -1,1 +1,1 @@
-const API_URL = "https://bent-scheme-bureau-regional.trycloudflare.com";
+const API_URL = "https://compiler-dragon-paintings-enhancement.trycloudflare.com";
