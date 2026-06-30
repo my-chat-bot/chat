@@ -1,4 +1,4 @@
 {
   "apiUrl": "https://procedure-telecharger-postage-ddr.trycloudflare.com"
-  "runners": []
+  "workers": []
 }
